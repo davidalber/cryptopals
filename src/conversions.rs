@@ -20,6 +20,11 @@ fn hex_to_byte(hex: char) -> u8 {
     }
 }
 
+fn nibble_to_hex(nibble: u8) -> char {
+    let alphabet = "0123456789abcdef";
+    alphabet.chars().nth(nibble as usize).unwrap()
+}
+
 fn hex_to_bytes(hex: &str) -> Vec<u8> {
     let mut bytes = vec![0; hex.len() / 2];
     let hex = hex.chars().enumerate();
@@ -38,6 +43,16 @@ fn hex_to_bytes(hex: &str) -> Vec<u8> {
 fn int_to_base64(val: u32) -> char {
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     return alphabet.chars().nth(val as usize).unwrap();
+}
+
+pub fn bytes_to_hex(bytes: &Vec<u8>) -> String {
+    let mut hex: Vec<char> = Vec::with_capacity(2*bytes.len());
+    for byte in bytes.iter() {
+        hex.push(nibble_to_hex(byte >> 4));
+        hex.push(nibble_to_hex(byte & 15));
+    }
+
+    hex.iter().collect()
 }
 
 fn bytes_to_base64(bytes: &Vec<u8>) -> String {
@@ -75,6 +90,14 @@ mod tests {
     }
 
     #[test]
+    fn test_nibble_to_hex() {
+        let alphabet = "0123456789abcdef";
+        for val in 0..16 {
+            assert_eq!(nibble_to_hex(val), alphabet.chars().nth(val as usize).unwrap());
+        }
+    }
+
+    #[test]
     fn test_hex_to_bytes() {
         assert_eq!(
             hex_to_bytes("000102030405060708090a0b0c0d0e0ff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"),
@@ -94,6 +117,11 @@ mod tests {
                 alphabet.chars().nth(val as usize).unwrap()
             );
         }
+    }
+
+    #[test]
+    fn test_bytes_to_hex() {
+        assert_eq!(bytes_to_hex(&vec![2, 3, 120]), "020378");
     }
 
     #[test]
