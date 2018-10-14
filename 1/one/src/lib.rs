@@ -67,6 +67,27 @@ mod tests {
     use *;
 
     #[test]
+    fn test_hex_to_byte() {
+        let alphabet = "0123456789abcdef";
+        for (i, c) in alphabet.chars().enumerate() {
+            assert_eq!(hex_to_byte(c), i as u8);
+        }
+    }
+
+    #[test]
+    fn test_hex_to_bytes() {
+        assert_eq!(hex_to_bytes("000102030405060708090a0b0c0d0e0ff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"), vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255]);
+    }
+
+    #[test]
+    fn test_int_to_base64() {
+        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        for val in 0..64 {
+            assert_eq!(int_to_base64(val), alphabet.chars().nth(val as usize).unwrap());
+        }
+    }
+
+    #[test]
     fn test_bytes_to_base64() {
         assert_eq!(bytes_to_base64(vec![2, 3, 120]),
          "AgN4");
