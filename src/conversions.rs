@@ -64,7 +64,7 @@ pub fn hex_to_base64(hex: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use *;
+    use conversions::*;
 
     #[test]
     fn test_hex_to_byte() {
