@@ -25,7 +25,7 @@ fn nibble_to_hex(nibble: u8) -> char {
     alphabet.chars().nth(nibble as usize).unwrap()
 }
 
-fn hex_to_bytes(hex: &str) -> Vec<u8> {
+pub fn hex_to_bytes(hex: &str) -> Vec<u8> {
     let mut bytes = vec![0; hex.len() / 2];
     let hex = hex.chars().enumerate();
     for (i, c) in hex {
@@ -46,7 +46,7 @@ fn int_to_base64(val: u32) -> char {
 }
 
 pub fn bytes_to_hex(bytes: &Vec<u8>) -> String {
-    let mut hex: Vec<char> = Vec::with_capacity(2*bytes.len());
+    let mut hex: Vec<char> = Vec::with_capacity(2 * bytes.len());
     for byte in bytes.iter() {
         hex.push(nibble_to_hex(byte >> 4));
         hex.push(nibble_to_hex(byte & 15));
@@ -93,7 +93,10 @@ mod tests {
     fn test_nibble_to_hex() {
         let alphabet = "0123456789abcdef";
         for val in 0..16 {
-            assert_eq!(nibble_to_hex(val), alphabet.chars().nth(val as usize).unwrap());
+            assert_eq!(
+                nibble_to_hex(val),
+                alphabet.chars().nth(val as usize).unwrap()
+            );
         }
     }
 
