@@ -40,7 +40,7 @@ fn int_to_base64(val: u32) -> char {
     return alphabet.chars().nth(val as usize).unwrap();
 }
 
-fn bytes_to_base64(bytes: Vec<u8>) -> String {
+fn bytes_to_base64(bytes: &Vec<u8>) -> String {
     let mut segments: Vec<u32> = vec![0; ((bytes.len() as f32) / 3.0).ceil() as usize];
 
     for (i, byte) in bytes.iter().rev().enumerate() {
@@ -59,7 +59,7 @@ fn bytes_to_base64(bytes: Vec<u8>) -> String {
 }
 
 pub fn hex_to_base64(hex: &str) -> String {
-    bytes_to_base64(hex_to_bytes(hex))
+    bytes_to_base64(&hex_to_bytes(hex))
 }
 
 #[cfg(test)]
@@ -98,7 +98,7 @@ mod tests {
 
     #[test]
     fn test_bytes_to_base64() {
-        assert_eq!(bytes_to_base64(vec![2, 3, 120]), "AgN4");
+        assert_eq!(bytes_to_base64(&vec![2, 3, 120]), "AgN4");
     }
 
     #[test]
