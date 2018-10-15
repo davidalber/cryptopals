@@ -25,6 +25,10 @@ fn nibble_to_hex(nibble: u8) -> char {
     alphabet.chars().nth(nibble as usize).unwrap()
 }
 
+pub fn byte_to_hex(byte: u8) -> String {
+    format!("{}{}", nibble_to_hex(byte >> 4), nibble_to_hex(byte & 15))
+}
+
 pub fn hex_to_bytes(hex: &str) -> Vec<u8> {
     let mut bytes = vec![0; hex.len() / 2];
     let hex = hex.chars().enumerate();
@@ -97,6 +101,23 @@ mod tests {
                 nibble_to_hex(val),
                 alphabet.chars().nth(val as usize).unwrap()
             );
+        }
+    }
+
+    #[test]
+    fn test_byte_to_hex() {
+        let alphabet = "0123456789abcdef";
+        for val1 in 0..16 {
+            for val2 in 0..16 {
+                assert_eq!(
+                    byte_to_hex(val1 * 16 + val2),
+                    format!(
+                        "{}{}",
+                        alphabet.chars().nth(val1 as usize).unwrap(),
+                        alphabet.chars().nth(val2 as usize).unwrap()
+                    )
+                );
+            }
         }
     }
 
