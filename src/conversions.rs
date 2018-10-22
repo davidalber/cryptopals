@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fmt;
 
+#[derive(Debug)]
 pub struct HexValue {
     pub bytes: Vec<u8>,
 }
