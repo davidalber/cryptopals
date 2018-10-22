@@ -27,7 +27,7 @@ pub fn english_score(msg: &str) -> u32 {
         let char_percent = count / msg.len() as f32;
         if let Some(avg_freq) = char_counts.get(&c) {
             let rel_diff = (avg_freq - char_percent).abs() / avg_freq;
-            let delta = (1./(1.-rel_diff)).floor() as u32;
+            let delta = (1. / (1. - rel_diff)).floor() as u32;
             match (avg_freq - char_percent).abs() / avg_freq > 0.5 {
                 true => score += delta,
                 false => score -= delta,
