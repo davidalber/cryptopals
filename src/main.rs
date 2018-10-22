@@ -3,11 +3,10 @@ extern crate cryptopals;
 mod set1 {
     use cryptopals::analysis::english_score;
     use cryptopals::conversions::{Base64Value, HexValue};
+    use std::fs::File;
+    use std::io::prelude::*;
 
-    const ASCII_LOWER: [char; 26] = [
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-        's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-    ];
+    const CIPHER_CHARS: &str = "abcdefghijklmnopqrsqtuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()-_=+;:',<.>/?";
 
     pub fn challenge1() {
         // https://cryptopals.com/sets/1/challenges/1
@@ -29,35 +28,56 @@ mod set1 {
         }
     }
 
-    pub fn challenge3() {
-        // https://cryptopals.com/sets/1/challenges/3
-        let encrypted_str = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+    fn score_single_char_xor_decrypt(encrypted_str: &str) -> (i32, String) {
         if let Ok(encrypted) = HexValue::from_str(encrypted_str) {
-            let winner = ASCII_LOWER
-                .iter()
+            let winner = CIPHER_CHARS
+                .chars()
                 .map(|l| {
                     let key_str: String =
-                        vec![HexValue::byte_to_hex(*l as u8); encrypted_str.len() / 2]
+                        vec![HexValue::byte_to_hex(l as u8); encrypted_str.len() / 2]
                             .into_iter()
                             .collect();
                     if let Ok(key) = HexValue::from_str(&key_str) {
-                        let decrypted = String::from_utf8(encrypted.xor(&key).bytes).unwrap();
-                        (english_score(&decrypted), l)
-                    } else {
-                        (0, l)
+                        if let Ok(decrypted) = String::from_utf8(encrypted.xor(&key).bytes) {
+                            return (english_score(&decrypted), l);
+                        }
                     }
+                    (0, l)
                 }).max_by_key(|&(s, _)| s)
                 .unwrap();
 
             let key_str: String =
-                vec![HexValue::byte_to_hex(*winner.1 as u8); encrypted_str.len() / 2]
+                vec![HexValue::byte_to_hex(winner.1 as u8); encrypted_str.len() / 2]
                     .into_iter()
                     .collect();
             if let Ok(key) = HexValue::from_str(&key_str) {
-                let decrypted = String::from_utf8(encrypted.xor(&key).bytes).unwrap();
-                println!("{}", decrypted);
+                if let Ok(decrypted) = String::from_utf8(encrypted.xor(&key).bytes) {
+                    return (winner.0, decrypted);
+                }
             }
         }
+        (0, String::from(""))
+    }
+
+    pub fn challenge3() {
+        // https://cryptopals.com/sets/1/challenges/3
+        let encrypted_str = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+        let (_, decrypted) = score_single_char_xor_decrypt(encrypted_str);
+        println!("{:?}", decrypted);
+    }
+
+    pub fn challenge4() {
+        // https://cryptopals.com/sets/1/challenges/4
+        let mut f = File::open("data/4.txt").expect("file not found");
+        let mut contents = String::new();
+        f.read_to_string(&mut contents).expect("something went wrong reading the file");
+        let mut results = Vec::new();
+        for line in contents.split("\n") {
+            results.push(score_single_char_xor_decrypt(line));
+        }
+
+        let winner = results.iter().max_by_key(|(s, _)| s).unwrap();
+        println!("{:?}", winner.1);
     }
 }
 
@@ -71,4 +91,8 @@ fn main() {
 
     println!("\n# Challenge 3");
     set1::challenge3();
+
+    println!("\n# Challenge 4");
+    set1::challenge4();
+
 }
