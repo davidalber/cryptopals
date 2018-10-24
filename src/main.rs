@@ -3,6 +3,7 @@ extern crate cryptopals;
 mod set1 {
     use cryptopals::analysis::english_score;
     use cryptopals::conversions::{Base64Value, HexValue};
+    use cryptopals::encrypt::repeating_key_xor;
     use std::fs::File;
     use std::io::prelude::*;
 
@@ -79,6 +80,13 @@ mod set1 {
         let winner = results.iter().max_by_key(|(s, _)| s).unwrap();
         println!("{:?}", winner.1);
     }
+
+    pub fn challenge5() {
+        // https://cryptopals.com/sets/1/challenges/4
+        let msg = r"Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal";
+        println!("{}", repeating_key_xor(msg, "ICE"));
+    }
 }
 
 fn main() {
@@ -95,4 +103,6 @@ fn main() {
     println!("\n# Challenge 4");
     set1::challenge4();
 
+    println!("\n# Challenge 5");
+    set1::challenge5();
 }
