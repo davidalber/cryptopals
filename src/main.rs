@@ -7,7 +7,8 @@ mod set1 {
     use std::fs::File;
     use std::io::prelude::*;
 
-    const CIPHER_CHARS: &str = "abcdefghijklmnopqrsqtuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()-_=+;:',<.>/?";
+    const CIPHER_CHARS: &str =
+        "abcdefghijklmnopqrsqtuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()-_=+;:',<.>/?";
 
     pub fn challenge1() {
         // https://cryptopals.com/sets/1/challenges/1
@@ -23,7 +24,10 @@ mod set1 {
         if let Ok(hex1) = HexValue::from_str("1c0111001f010100061a024b53535009181c") {
             if let Ok(hex2) = HexValue::from_str("686974207468652062756c6c277320657965") {
                 let result = hex1.xor(&hex2);
-                assert_eq!(result, HexValue::from_str("746865206b696420646f6e277420706c6179").unwrap());
+                assert_eq!(
+                    result,
+                    HexValue::from_str("746865206b696420646f6e277420706c6179").unwrap()
+                );
                 println!("{} ^ {} -> {}", hex1, hex2, result);
             }
         }
@@ -71,7 +75,8 @@ mod set1 {
         // https://cryptopals.com/sets/1/challenges/4
         let mut f = File::open("data/4.txt").expect("file not found");
         let mut contents = String::new();
-        f.read_to_string(&mut contents).expect("something went wrong reading the file");
+        f.read_to_string(&mut contents)
+            .expect("something went wrong reading the file");
         let mut results = Vec::new();
         for line in contents.split("\n") {
             results.push(score_single_char_xor_decrypt(line));

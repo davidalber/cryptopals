@@ -2,7 +2,13 @@ use conversions::HexValue;
 
 pub fn repeating_key_xor(plaintext: &str, key: &str) -> HexValue {
     let key_bytes: Vec<u8> = key.as_bytes().to_vec();
-    let hex_key: HexValue = HexValue::from_bytes(&key_bytes.into_iter().cycle().take(plaintext.len()).collect());
+    let hex_key: HexValue = HexValue::from_bytes(
+        &key_bytes
+            .into_iter()
+            .cycle()
+            .take(plaintext.len())
+            .collect(),
+    );
 
     let hex_plaintext = HexValue::from_bytes(&plaintext.as_bytes().to_vec());
     hex_plaintext.xor(&hex_key)
