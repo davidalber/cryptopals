@@ -70,3 +70,49 @@ pub fn english_score(msg: &str) -> i32 {
 
     score
 }
+
+/// Return the [Hamming distance](https://en.wikipedia.org/wiki/Hamming_distance) of two strings
+///
+/// # Arguments
+///
+/// * `s1 and s2` - strings from which to compute the Hamming distance
+///
+/// # Panics
+/// The function panics if `s1` and `s2` are not the same length.
+///
+/// # Example
+///
+/// ```
+/// extern crate cryptopals;
+/// use cryptopals::analysis::hamming_distance;
+///
+/// let distance = hamming_distance("this is a test", "wokka wokka!!!");
+///
+/// assert_eq!(distance, 37);
+/// ```
+pub fn hamming_distance(s1: &str, s2: &str) -> u32 {
+    assert_eq!(s1.len(), s2.len());
+    let b1: &[u8] = s1.as_bytes();
+    let b2: &[u8] = s2.as_bytes();
+    let mut set_bits: u32 = 0;
+
+    for (b1, b2) in b1.iter().zip(b2.iter()){
+        let mut x: u8 = b1 ^ b2;
+        for _ in 0..8 {
+            set_bits += (x % 2) as u32;
+            x >>= 1;
+        }
+    }
+
+    set_bits
+}
+
+#[cfg(test)]
+mod tests {
+    use analysis::*;
+
+    #[test]
+    fn test_hamming_distance() {
+        assert_eq!(hamming_distance("this is a test", "wokka wokka!!!"), 37);
+    }
+}
